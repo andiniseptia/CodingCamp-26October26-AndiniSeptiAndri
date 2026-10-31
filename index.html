@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense &amp; Budget Visualizer</title>
+
+    <!-- Application stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Chart.js loaded from CDN — no bundling or vendoring -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  </head>
+  <body>
+
+    <!-- =====================================================
+         APP HEADER
+         Contains the app title and the dark/light theme toggle
+         ===================================================== -->
+    <header id="app-header">
+      <h1>Expense &amp; Budget Visualizer</h1>
+      <button id="theme-toggle-btn" type="button">🌙 Dark Mode</button>
+    </header>
+
+    <!-- =====================================================
+         STORAGE WARNING BANNER
+         Hidden by default (hidden attribute).
+         Shown as a non-blocking banner when Local Storage
+         writes fail (quota exceeded, access denied, etc.).
+         ===================================================== -->
+    <div id="storage-warning" role="alert" hidden>
+      <span id="storage-warning-msg"></span>
+      <button id="storage-warning-dismiss" type="button" aria-label="Dismiss warning">✕</button>
+    </div>
+
+    <!-- =====================================================
+         VIEW TOGGLE
+         Switches between Transaction List view and
+         Monthly Summary view.
+         ===================================================== -->
+    <nav id="view-toggle" aria-label="View selection">
+      <button type="button" id="btn-view-list" class="view-btn active" data-view="list">
+        Transaction List
+      </button>
+      <button type="button" id="btn-view-monthly" class="view-btn" data-view="monthly">
+        Monthly Summary
+      </button>
+    </nav>
+
+    <!-- =====================================================
+         MAIN LAYOUT WRAPPER
+         Responsive two-column layout on desktop,
+         single-column stack on mobile (< 768px).
+         ===================================================== -->
+    <main class="main-layout">
+
+      <!-- ===================================================
+           TRANSACTION LIST VIEW (default view)
+           Contains: input form, total balance, sort control,
+           transaction list, and pie chart.
+           =================================================== -->
+      <section id="transaction-list-view">
+
+        <!-- LEFT PANEL: form + balance + sort + transaction list -->
+        <div class="left-panel">
+
+          <!-- Input Form -->
+          <form id="input-form" novalidate>
+            <h2>Add Expense</h2>
+
+            <!-- Item Name field -->
+            <div class="form-group">
+              <label for="item-name">Item Name</label>
+              <input
+                type="text"
+                id="item-name"
+                name="item-name"
+                maxlength="100"
+                placeholder="e.g. Lunch at warung"
+                autocomplete="off"
+              />
+              <span class="error-msg" id="name-error" aria-live="polite"></span>
+            </div>
+
+            <!-- Amount field -->
+            <div class="form-group">
+              <label for="amount">Amount</label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                min="0.01"
+                step="any"
+                placeholder="e.g. 25000"
+              />
+              <span class="error-msg" id="amount-error" aria-live="polite"></span>
+            </div>
+
+            <!-- Category dropdown -->
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option value="">-- Select a category --</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Fun">Fun</option>
+              </select>
+              <span class="error-msg" id="category-error" aria-live="polite"></span>
+            </div>
+
+            <button type="submit" id="add-expense-btn">Add Expense</button>
+          </form>
+
+          <!-- Total Balance display -->
+          <div id="total-balance-container">
+            <span class="balance-label">Total Balance:</span>
+            <span id="total-balance">Rp0.00</span>
+          </div>
+
+          <!-- Sort Control -->
+          <div id="sort-control-container">
+            <label for="sort-control">Sort by:</label>
+            <select id="sort-control" name="sort-control">
+              <option value="newest-first">Newest First</option>
+              <option value="amount-asc">Amount: Low to High</option>
+              <option value="amount-desc">Amount: High to Low</option>
+              <option value="category-az">Category: A–Z</option>
+            </select>
+          </div>
+
+          <!-- Transaction list — rendered by the Renderer -->
+          <ul id="transaction-list" aria-label="Transaction list">
+            <!-- Transactions are injected here by app.js -->
+          </ul>
+
+        </div><!-- /.left-panel -->
+
+        <!-- RIGHT PANEL: pie chart -->
+        <div class="right-panel">
+
+          <!-- Chart container with canvas and empty-state message -->
+          <div id="chart-container">
+            <h2>Spending by Category</h2>
+            <!-- "No data" message shown when Transaction_List is empty -->
+            <p id="no-chart-msg">No data to display. Add an expense to see your chart.</p>
+            <!-- Chart.js renders into this canvas -->
+            <canvas id="expense-chart" aria-label="Spending pie chart" role="img"></canvas>
+          </div>
+
+        </div><!-- /.right-panel -->
+
+      </section><!-- /#transaction-list-view -->
+
+      <!-- ===================================================
+           MONTHLY SUMMARY VIEW (hidden by default)
+           Shows per-month expense totals derived from
+           transaction timestamps.
+           =================================================== -->
+      <section id="monthly-summary-view" hidden>
+        <h2>Monthly Summary</h2>
+
+        <!-- Placeholder shown when no transactions exist -->
+        <p id="no-monthly-msg">No monthly data available. Add an expense to get started.</p>
+
+        <!-- Monthly totals — rendered by the Renderer -->
+        <ul id="monthly-list" aria-label="Monthly summary list">
+          <!-- Month rows are injected here by app.js -->
+        </ul>
+
+      </section><!-- /#monthly-summary-view -->
+
+    </main><!-- /.main-layout -->
+
+    <!-- Application logic — loaded last so the DOM is ready -->
+    <script src="js/app.js"></script>
+  </body>
+</html>

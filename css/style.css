@@ -1,0 +1,427 @@
+/* ============================================================
+   LIGHT THEME CUSTOM PROPERTIES (default)
+   All color and theme-sensitive values are defined here as
+   CSS custom properties on :root. These are the defaults that
+   apply when the light theme is active (no .dark class on body).
+   Referenced throughout the stylesheet via var(--property-name).
+   ============================================================ */
+:root {
+  --bg-color:     #ffffff;  /* Page background */
+  --text-color:   #1a1a1a;  /* Primary text */
+  --card-bg:      #f5f5f5;  /* Card / panel backgrounds */
+  --border-color: #dddddd;  /* Input and separator borders */
+  --accent-color: #4a90e2;  /* Buttons, active highlights */
+  --error-color:  #d32f2f;  /* Inline validation error messages */
+  --warning-bg:   #fff3cd;  /* Storage warning banner background */
+  --warning-text: #856404;  /* Storage warning banner text */
+}
+
+/* ============================================================
+   DARK THEME OVERRIDES
+   Applied when JavaScript toggles the "dark" class onto <body>.
+   Every custom property defined in :root is overridden here so
+   the entire page switches color scheme without any other CSS
+   changes. See Requirements 8.6 and 8.7.
+   ============================================================ */
+body.dark {
+  --bg-color:     #1a1a2e;  /* Dark page background */
+  --text-color:   #e0e0e0;  /* Light primary text */
+  --card-bg:      #16213e;  /* Darker card / panel backgrounds */
+  --border-color: #444466;  /* Muted borders */
+  --accent-color: #7eb8f7;  /* Softer blue for dark backgrounds */
+  --error-color:  #ef9a9a;  /* Lighter red — visible on dark bg */
+  --warning-bg:   #3a3000;  /* Dark amber for warning banner */
+  --warning-text: #ffd54f;  /* Bright amber text for warning */
+}
+
+/* ============================================================
+   BASE BODY STYLES
+   Applies the active theme's background and text colors to the
+   entire page via the custom properties defined above.
+   Both light and dark themes are covered — switching the theme
+   class on <body> automatically updates these values everywhere.
+   A smooth transition is added so theme switches animate softly
+   rather than snapping between colors (Requirement 8.7).
+   ============================================================ */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ============================================================
+   APP HEADER
+   Flex row that places the app title on the left and the
+   theme-toggle button on the right. Uses --accent-color as its
+   background so it stands out from the page (Requirement 8.1).
+   ============================================================ */
+#app-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+/* ============================================================
+   STORAGE WARNING BANNER
+   Non-blocking alert shown when Local Storage writes fail.
+   Hidden via the HTML [hidden] attribute by default — no
+   display:none needed here. When visible, a flex row keeps the
+   message text on the left and the dismiss button on the right.
+   ============================================================ */
+#storage-warning {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#storage-warning-dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1.2rem;
+}
+
+/* ============================================================
+   VIEW TOGGLE NAV
+   Centered button group that switches between the Transaction
+   List view and the Monthly Summary view. Active state uses
+   --accent-color fill so the selected view is clearly indicated
+   (Requirement 7.1).
+   ============================================================ */
+#view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+#view-toggle button {
+  padding: 0.5rem 1.5rem;
+  border: 2px solid var(--accent-color);
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--text-color);
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 1rem;
+}
+
+#view-toggle button.active {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+
+/* ============================================================
+   INPUT FORM
+   Styles for the "Add Expense" form — form groups, labels,
+   text/number inputs, select dropdowns, inline error messages,
+   and the submit button. All color values reference the active
+   theme's custom properties so both light and dark themes work
+   without any extra overrides.
+   ============================================================ */
+
+/* Form group — block wrapper that stacks label above input */
+.form-group {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Labels inside forms — bold, block-level, small bottom gap */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+/* Text inputs, number inputs, and select dropdowns */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 4px;
+}
+
+/* Inline validation error messages
+   min-height reserves space so the layout does not shift
+   when errors appear or disappear (Requirement 2.x). */
+.error-msg {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  display: block;
+  min-height: 1.2em;
+}
+
+/* Submit (Add Expense) button */
+#input-form button[type="submit"] {
+  background-color: var(--accent-color);
+  color: #fff;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   TOTAL BALANCE DISPLAY
+   Prominent summary element showing the running total of all
+   recorded expenses. Large, bold text on a card background so
+   it stands out from the form and list beneath it.
+   References --card-bg so it follows the active theme.
+   (Requirements 4.1, 4.4)
+   ============================================================ */
+#total-balance-container {
+  background-color: var(--card-bg);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.balance-label {
+  font-weight: bold;
+}
+
+#total-balance {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* ============================================================
+   SORT CONTROL
+   Dropdown that lets users reorder the transaction list.
+   Matches the sizing and visual style of the form inputs so
+   the control feels consistent within the left panel.
+   min-height: 44px meets the touch-target requirement (Req 7.5).
+   ============================================================ */
+#sort-control-container {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sort-control-container label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+#sort-control {
+  flex: 1;
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   TRANSACTION LIST
+   Scrollable <ul> that holds all recorded transactions.
+   list-style and padding are reset so the browser's default
+   bullet and indent don't appear. max-height + overflow-y
+   makes the list independently scrollable without pushing
+   the chart off screen. (Requirements 3.1, 3.3)
+   ============================================================ */
+#transaction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Individual transaction row
+   Flex row keeps name/amount/category on the left and the
+   delete button on the right. Bottom border separates rows
+   visually without a heavy grid. (Requirements 3.2, 3.5) */
+#transaction-list li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+/* Transaction detail group — name, amount, category */
+.transaction-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.transaction-name {
+  font-weight: bold;
+}
+
+.transaction-amount {
+  font-size: 0.95rem;
+}
+
+.transaction-category {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* Empty-state placeholder shown when no transactions exist.
+   Italic centered text at reduced opacity so it reads as a
+   hint rather than real content. (Requirement 3.1) */
+.empty-placeholder {
+  font-style: italic;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.6;
+  padding: 1rem 0;
+}
+
+/* ============================================================
+   DELETE BUTTON
+   Appears inside each transaction <li>. Uses --error-color
+   fill (red) to signal a destructive action. Touch-target
+   minimum of 44×44 px is enforced. (Requirements 3.5, 7.5)
+   ============================================================ */
+.delete-btn {
+  min-height: 44px;
+  min-width: 44px;
+  background-color: var(--error-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CHART CONTAINER
+   Card wrapper for the Chart.js pie chart in the right panel.
+   position: relative is required by Chart.js for responsive
+   sizing. The "no data" message is centered and faded so it
+   reads as a placeholder hint rather than primary content.
+   (Requirements 5.4, 10.2)
+   ============================================================ */
+#chart-container {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 4px;
+  position: relative;
+}
+
+#no-chart-msg {
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ============================================================
+   MAIN LAYOUT — MOBILE-FIRST RESPONSIVE GRID
+   Base styles target mobile (single-column stack). The 768px
+   breakpoint upgrades to a two-column side-by-side layout.
+   All widths use flex / relative units — no fixed px widths —
+   so the layout adapts to any viewport and browser font size.
+   (Requirements 7.1, 7.2, 7.3, 7.4)
+   ============================================================ */
+
+/* Mobile first: single-column, full-width stack */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Transaction list view and monthly summary fill container width */
+#transaction-list-view,
+#monthly-summary-view {
+  width: 100%;
+}
+
+/* Left panel: form + balance + sort + list */
+.left-panel {
+  width: 100%;
+}
+
+/* Right panel: pie chart */
+.right-panel {
+  width: 100%;
+}
+
+/* Desktop: two-column side-by-side layout at 768px and above */
+@media (min-width: 768px) {
+  .main-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  /* Left panel takes 1 share of available space */
+  .left-panel {
+    flex: 1;
+    width: auto;
+  }
+
+  /* Right panel takes 2 shares — visually wider for the chart */
+  .right-panel {
+    flex: 2;
+    width: auto;
+  }
+}
+
+/* ============================================================
+   MONTHLY SUMMARY VIEW
+   Full-width card that lists per-month expense totals.
+   Each month row is a flex row with space-between so the month
+   label sits on the left and the amount on the right, separated
+   by a subtle bottom border. list-style is reset to remove
+   browser-default bullets. (Requirements 10.2, 10.5)
+   ============================================================ */
+#monthly-summary-view {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+#monthly-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#monthly-list li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
